@@ -9,14 +9,14 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Cloudinary config
+// Cloudinary configuration
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
   api_key: process.env.CLOUD_KEY,
   api_secret: process.env.CLOUD_SECRET
 });
 
-// Simple root route
+// Root route (optional)
 app.get('/', (req, res) => {
   res.send('Photo Share Backend is running. Use /images and /download endpoints.');
 });
@@ -24,8 +24,10 @@ app.get('/', (req, res) => {
 // Fetch all uploaded images
 app.get('/images', async (req, res) => {
   try {
-    const result = await cloudinary.api.resources({ type: 'upload' }); // fetch all uploads
-    res.json(result.resources.map(r => r.secure_url));
+    // Fetch all uploads (no prefix needed)
+    const result = await cloudinary.api.resources({ type: 'upload' });
+    const urls = result.resources.map(r => r.secure_url);
+    res.json(urls);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -35,6 +37,7 @@ app.get('/images', async (req, res) => {
 app.post('/download', async (req, res) => {
   const { files } = req.body;
   if (!files || !files.length) return res.status(400).send('No files selected');
+
   res.attachment('photos.zip');
   const archive = archiver('zip');
   archive.pipe(res);
@@ -43,6 +46,7 @@ app.post('/download', async (req, res) => {
     const response = await axios.get(url, { responseType: 'arraybuffer' });
     archive.append(response.data, { name: url.split('/').pop() });
   }
+
   archive.finalize();
 });
 
