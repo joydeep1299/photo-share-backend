@@ -4,6 +4,8 @@ import dotenv from 'dotenv';
 import { v2 as cloudinary } from 'cloudinary';
 
 dotenv.config();
+￼
+
 const app = express();
 app.use(cors());
 app.use(express.json());
