@@ -21,9 +21,11 @@ app.get('/', (req, res) => {
 
 app.get('/images', async (req, res) => {
   try {
-    const result = await cloudinary.api.resources({ type: 'upload', prefix: 'photos/' });
+    const result = await cloudinary.api.resources({ type: 'upload' });
     res.json(result.resources.map(r => r.secure_url));
-  } catch (err) { res.status(500).json({ error: err.message }); }
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 app.post('/download', async (req, res) => {
