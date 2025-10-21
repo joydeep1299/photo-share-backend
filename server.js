@@ -15,6 +15,9 @@ cloudinary.config({
   api_key: process.env.CLOUD_KEY,
   api_secret: process.env.CLOUD_SECRET
 });
+app.get('/', (req, res) => {
+  res.send('Photo Share Backend is running. Use /images and /download API endpoints.');
+});
 
 app.get('/images', async (req, res) => {
   try {
